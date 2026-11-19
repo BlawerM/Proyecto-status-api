@@ -32,5 +32,9 @@ export async function buscarPorId(id) {
 
 export async function eliminar(id) {
     if (!mongoose.Types.ObjectId.isValid(id)) return null;
-    return await coleccion().findOneAndDelete({ _Id: new mongoose.Types.ObjectId})
+    const resultado = await coleccion().findOneAndDelete({ 
+        _id: new mongoose.Types.ObjectId(id) 
+    });
+    // Compatibilidad tanto si devuelve el documento directo como si devuelve { value }
+    return resultado?.value !== undefined ? resultado.value : resultado;
 }

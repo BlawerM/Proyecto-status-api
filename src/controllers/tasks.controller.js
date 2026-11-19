@@ -42,7 +42,7 @@ export async function obtener(req, res, next) {
     }
 }
 
-export async function actualizar(req, req, next) {
+export async function actualizar(req, res, next) {
     try {
         const body = req.body || {}
         const {title, desc, incentive, status} = body
