@@ -1,35 +1,36 @@
-let productos = [
-    {id: 1, desc: "BMW", categoria: "carros"},
-    {id: 2, desc: "Suzuki", categoria: "carros"},
-    {id: 3, desc: "Escarabajo", categoria: "carros"},
-    {id: 4, desc: "HP", categoria: "computadores"},
-    {id: 5, desc: "MAC", categoria: "computadores"},
-    {id: 6, desc: "Lenovo", categoria: "computadores"},
-    {id: 7, desc: "Dell", categoria: "computadores"},
-]
-let siguienteId = 8
+import mongoose from "mongoose";
 
-export function listar({categoria, precioMax} = {}) {
-    let datos = productos
-    if (categoria) datos = datos.filter(p => p.categoria === categoria)
-    if (precioMax) datos = datos.filter (p => p.precio <= Number(precioMax))
-    return datos
+const coleccion = () => mongoose.connection.collection("Tasks");
+
+export async function crear(datos) {
+    const resultado = await coleccion().insertOne(datos);
+    return {
+        _id: resultado.inserteId,
+        ...datos
+    };
 }
 
-export function buscarPorId(id) {
-    return productos.find(p => p.id === id)
+export async function actualizar(id, datos) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    return await coleccion().findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(id) },
+        { $set: datos },
+        { returnDocument: "after" }
+    );
 }
 
-export function crear(datos) {
-    const nuevo = {id: siguienteId++, ...datos}
-    productos.push(nuevo)
-    return nuevo
+export async function listar(filtros = {}) {
+    const query = {};
+    if (filtros.status) query.status = filtros.status;
+    return await coleccion().find(query).toArray();
 }
 
-export function eliminar(id) {
-    const index = productos.find(p => p.id === id)
-    if (index === -1) return null
-    
-    const [eliminado] = productos.splice(index, 1)
-    return eliminado
+export async function buscarPorId(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    return await coleccion().findOne({_id: new mongoose.Types.ObjectId(id)})
+}
+
+export async function eliminar(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
+    return await coleccion().findOneAndDelete({ _Id: new mongoose.Types.ObjectId})
 }
