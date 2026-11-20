@@ -54,7 +54,7 @@ export async function actualizar(req, res, next) {
             if (typeof incentive !== 'number' || incentive < 1){
                 return res.status(400).json({ error: 'El incentivo debe ser numérico y mayor a 0'})
             }
-            datosActualizar,incentive = incentive;
+            datosActualizar.incentive = incentive;
         }
         if (status!== undefined) datosActualizar.status = status;
         if (Object.keys(datosActualizar).length === 0) {
@@ -69,6 +69,7 @@ export async function actualizar(req, res, next) {
         if (error.code === 121) {
             return res.status(400).json({error: 'El valor de status no está permitido'})
         }
+        next(error);
     }
 }
 

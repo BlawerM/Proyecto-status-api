@@ -5,7 +5,7 @@ const coleccion = () => mongoose.connection.collection("Tasks");
 export async function crear(datos) {
     const resultado = await coleccion().insertOne(datos);
     return {
-        _id: resultado.inserteId,
+        _id: resultado.insertedId,
         ...datos
     };
 }

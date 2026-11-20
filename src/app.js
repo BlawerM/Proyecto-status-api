@@ -1,6 +1,6 @@
-import express from 'express';
+import express from 'express'
 import tasksRouter from './routes/tasks.routes.js'
-import { logger } from './middlewares/logger.js';
+import { logger } from './middlewares/logger.js'
  
 const app = express();
 
